@@ -1,7 +1,8 @@
 import joi from "joi";
 
 export const CardSchema = joi.object({
-    number: joi.number().required(),
+    employeeId: joi.number().required(),
+    number: joi.string().required(),
     cardholderName: joi.string().required(),
     securityCode: joi.string().required(),
     expirationDate: joi.string().required(),

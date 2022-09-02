@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
+import { CardSchema } from "../Schema/CardSchema";
 
-export function validateSchemaMiddleware(schema: any) {
-    return (req: Request, res: Response, next: NextFunction) => { 
-      const validation = schema.validate(req.body);
+
+export function validateSchemaMiddleware(req: Request, res: Response, next: NextFunction) {
+  console.log("Log do Middleware")
+  console.log(req.body)
+      const validation = CardSchema.validate(req.body);
       if (validation.error) {
         return res.sendStatus(422);
       }
-      
-      next();
-    }
+    next();
   }

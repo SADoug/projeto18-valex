@@ -1,21 +1,20 @@
 import { Request, Response } from "express";
-import { string } from "joi";
 import * as CardService from "../Services/CardService";
 
 export async function CardController(req: Request, res: Response) {
-    const { number, cardholderName, securityCode, expirationDate, password, isVirtual, originalCardId, isBlocked, type } = req.body;
+    console.log("Log do controller", req.body)
+    const apiKey = req.headers["x-api-key"]
+    const { number, cardholderName, securityCode, expirationDate, password, isVirtual, originalCardId, isBlocked, type, employeeId } = req.body;
 
     try {
-       if (!number || !cardholderName || !securityCode || !expirationDate || !password || !isVirtual || !originalCardId || !isBlocked || !type) {
-           throw new Error('Missing required fields');
-       }
-        const repo = CardService.CardInsert({number, cardholderName, 
+    
+        const repo = CardService.CardInsert(number, cardholderName, 
             securityCode, expirationDate,
             password, isVirtual, 
             originalCardId, isBlocked, 
-            type}); 
+            type, employeeId, apiKey); 
 
-        res.send("Working")
+        res.send(repo).status(201)
 
     } catch (error) {
         console.log(error);
