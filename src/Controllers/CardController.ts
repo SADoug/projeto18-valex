@@ -37,7 +37,6 @@ export async function cardPayment(req: Request, res: Response) {
 }
 
 export async function BlockCard(req: Request, res: Response) {
-    console.log("Log do controller", req.body)
 
     const { number, password } = req.body;
         const repo = await CardService.BlockCard(number, password);
@@ -46,7 +45,6 @@ export async function BlockCard(req: Request, res: Response) {
 
 }
 export async function UnBlockCard(req: Request, res: Response) {
-    console.log("Log do controller", req.body)
 
     const { number, password } = req.body;
 

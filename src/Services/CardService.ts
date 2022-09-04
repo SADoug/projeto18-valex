@@ -122,20 +122,14 @@ async function cardPayment(number: string) {
 
 async function BlockCard(number: string, password: string) {
 
-  //Somente cartões cadastrados devem ser ativados
   const cardCheck = await CardRepository.findByNumber(number)
-  console.log("Card check", cardCheck)
   if (!cardCheck) { throw { type: "conflict", message: "card does not exist" } }
-  //Somente cartões não expirados devem ser ativados
   let time = dayjs().format("MM/YY")
 
   if (cardCheck.expirationDate < time) { throw { type: "conflict", message: "card already expired" } }
-  console.log("2")
   let id = cardCheck.id
-  //Somente cartões não bloqueados devem ser bloqueados
   if (cardCheck.isBlocked === true) { throw { type: "conflict", message: "card already blocked" } }
 
-  //- A senha do cartão deverá ser recebida e verificada para garantir a segurança da requisição
   let hashedPassword = cardCheck.password
   if (!bcrypt.compareSync(password, hashedPassword)) { throw { type: "conflict", message: "invalid password" } }
 
@@ -147,22 +141,15 @@ async function BlockCard(number: string, password: string) {
 }
 async function UnBlockCard(number: string, password: string) {
 
-  //Somente cartões cadastrados devem ser ativados
   const cardCheck = await CardRepository.findByNumber(number)
-  console.log("Card check", cardCheck)
   if (!cardCheck) { throw { type: "conflict", message: "card does not exist" } }
 
-
-  //Somente cartões não expirados devem ser ativados
   let time = dayjs().format("MM/YY")
 
   if (cardCheck.expirationDate < time) { throw { type: "conflict", message: "card already expired" } }
-  console.log("2")
   let id = cardCheck.id
-  //Somente cartões bloqueados devem ser desbloqueados
   if (cardCheck.isBlocked === false) { throw { type: "conflict", message: "card already blocked" } }
 
-  //- A senha do cartão deverá ser recebida e verificada para garantir a segurança da requisição
   let hashedPassword = cardCheck.password
   if (!bcrypt.compareSync(password, hashedPassword)) { throw { type: "conflict", message: "invalid password" } }
 
