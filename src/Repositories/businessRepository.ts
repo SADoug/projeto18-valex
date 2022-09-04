@@ -1,5 +1,6 @@
-import { connection } from "../database";
-import { TransactionTypes } from "./cardRepository";
+
+import connection from "../db/database";
+import { TransactionTypes } from "./CardRepository";
 
 export interface Business {
   id: number;
@@ -13,5 +14,5 @@ export async function findById(id: number) {
     [id]
   );
 
-  return result.rows[0];
+  return result.rows;
 }

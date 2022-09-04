@@ -1,2 +1,3 @@
 ./valex
 ./node_modules
+.env
