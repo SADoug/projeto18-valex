@@ -95,19 +95,14 @@ async function cardActivation(number: string, securityCode: string, password: st
 
 async function cardPayment(number: string) {
 
-  //Somente cartões cadastrados devem ser ativados
   const cardCheck = await CardRepository.findByNumber(number)
-  console.log("Card check", cardCheck)
   if (!cardCheck) { throw { type: "conflict", message: "card not registered" } }
   let id = cardCheck.id
-  //Fazer a conta do balance
 
-  //trazer todas as transactions e todas as recharges
   let result = transactions(id)
   async function transactions(cardId: number) {
     const transactions = await paymentRepository.findByCardId(cardId);
     const recharges = await RechargeRepository.findByCardId(cardId);
-    console.log("Pega a visão", transactions, recharges)
     const balance = await getCardAmount(transactions, recharges);
 
     async function getCardAmount(payments: paymentRepository.PaymentWithBusinessName[], recharges: rechargeRepository.Recharge[]) {
@@ -115,8 +110,6 @@ async function cardPayment(number: string) {
       const totalRechargeAmount = recharges.reduce(sumTransactionWithAmount, 0);
       return totalRechargeAmount - totalPaymentAmount;
     }
-    console.log("Se liga ein!", balance, transactions, recharges)
-
 
     return { balance: balance, transactions, recharges };
   }
@@ -124,9 +117,6 @@ async function cardPayment(number: string) {
   function sumTransactionWithAmount(amount: number, transaction: any) {
     return amount + transaction.amount;
   }
-
-
-  //montar o objeto 
   return result
 }
 
