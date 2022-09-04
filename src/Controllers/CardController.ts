@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import * as CardService from "../Services/CardService";
 
 export async function CreateCard(req: Request, res: Response) {
-    console.log("Log do controller", req.body)
     const apiKey = req.headers["x-api-key"]
-    console.log(apiKey)
     const { cardholderName, password, isVirtual, originalCardId, isBlocked, type, employeeId } = req.body;
 
      const repo = await CardService.CardInsert(cardholderName,
