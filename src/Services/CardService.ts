@@ -49,7 +49,7 @@ async function CardInsert(cardholderName: string, password: string, isVirtual: b
   const securityCode = faker.finance.creditCardCVV();
   const SALT = 8;
   let encryptedString = bcrypt.hashSync(securityCode, SALT);
-
+ console.log(securityCode)
 
   if (apiVerification) {
 
@@ -75,27 +75,17 @@ async function CardInsert(cardholderName: string, password: string, isVirtual: b
 async function cardActivation(number: string, securityCode: string, password: string) {
   const hashedPassword = bcrypt.hashSync(password, 10);
 
-  //Somente cartões cadastrados devem ser ativados
   const cardCheck = await CardRepository.findByNumber(number)
-  console.log("Card check", cardCheck)
   if (!cardCheck) { throw { type: "not_found", message: "invalid card number" } }
   var time = dayjs().format("MM/YY")
-  console.log(dayjs().format("MM/YY"))
-  //Somente cartões não expirados devem ser ativados
 
   if (cardCheck.expirationDate < time) { throw { type: "conflict", message: "Card expired" } }
-  //Cartões já ativados (com senha cadastrada) não devem poder ser ativados de novo
   if (cardCheck.password != '') { throw { type: "conflict", message: "card already activated" } }
-  //O CVC deverá ser recebido e verificado para garantir a segurança da requisição      
   const isCVCValid = bcrypt.compareSync(securityCode, cardCheck.securityCode);
   if (!isCVCValid) { throw { type: "conflict", message: "CVC invalid" } }
-  //  if (cardCheck.securityCode != encryptedString) { throw "Erro no Card Service" }
-
-  //A senha do cartão deverá ser composta de 4 números
   const PASSWORD_FORMAT_4_DIGITS = /^[0-9]{4}$/;
   if (!PASSWORD_FORMAT_4_DIGITS.test(password)) throw { type: "bad_request", message: "invalid password" };
 
-  //- A senha do cartão deverá ser persistida de forma criptografado por ser um dado sensível
   let id = cardCheck.id
   let cardData = {
     password: hashedPassword,
